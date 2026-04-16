@@ -87,7 +87,7 @@ pub fn parse(input: &str) -> Result<Vec<Component>> {
         if trimmed.starts_with("component:") {
             let name = trimmed
                 .strip_prefix("component:")
-                .unwrap()
+                .expect("TODO: handle error")
                 .trim()
                 .to_string();
             if name.is_empty() {
@@ -418,7 +418,7 @@ mod tests {
 
     #[test]
     fn parse_empty_input() {
-        let components = parse("").unwrap();
+        let components = parse("").expect("TODO: handle error");
         assert!(components.is_empty());
     }
 
@@ -431,7 +431,7 @@ mod tests {
     author: Alice
   security: kennel
 "#;
-        let components = parse(input).unwrap();
+        let components = parse(input).expect("TODO: handle error");
         assert_eq!(components.len(), 1);
         assert_eq!(components[0].name, "test-svc");
         assert_eq!(components[0].version, "1.0.0");
@@ -456,11 +456,11 @@ mod tests {
     check: cargo clippy -- -D unsafe-code
     severity: error
 "#;
-        let components = parse(input).unwrap();
+        let components = parse(input).expect("TODO: handle error");
         assert_eq!(components.len(), 1);
         let c = &components[0];
         assert!(c.recipe.is_some());
-        assert_eq!(c.recipe.as_ref().unwrap().tool, "cargo");
+        assert_eq!(c.recipe.as_ref().expect("TODO: handle error").tool, "cargo");
         assert_eq!(c.contracts.len(), 1);
         assert_eq!(c.contracts[0].name, "no-unsafe");
     }
